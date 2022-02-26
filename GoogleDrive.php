@@ -12,7 +12,7 @@ class GoogleDrive {
 	private $service = false;
 	private $file = false;
 	public $targetDirectory = [
-		'1W_-SRmk-Y-ZwC9OWkyFlBiG_AJk-VInc'
+		'1s0qF7XVxi0puPMcrefbFI6gnDj6R51wW'
 	];
 	
 	public function __construct() {
