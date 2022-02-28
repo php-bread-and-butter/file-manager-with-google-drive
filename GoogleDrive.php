@@ -100,7 +100,7 @@ class GoogleDrive {
 	public function CreateFolder(String $folderName, Array $targetDirectory)
 	{
 		$this->file->setParents($targetDirectory);
-		$listFolder = $this->GetFolder($folderName);
+		$listFolder = $this->GetFolder($folderName, $targetDirectory[0]);
 		if(count($listFolder) == 0)
 		{
 			$this->file->setName($folderName);
@@ -115,10 +115,10 @@ class GoogleDrive {
 		return $folder;
 	}
 	
-	private function GetFolder(String $folderName)
+	private function GetFolder(String $folderName, String $parentFolderId)
 	{
 		$file = $this->service->files->listFiles([
-			"q" => "name = '$folderName' and mimeType = 'application/vnd.google-apps.folder'"
+			"q" => "'{$parentFolderId}' in parents and name = '$folderName' and mimeType = 'application/vnd.google-apps.folder'"
 		]);
 		
 		return $file->getFiles();
