@@ -83,6 +83,30 @@ class GoogleDrive {
 		}
 	}
 	
+	public function writeFile(string $fileData, string $fileName)
+	{
+		try {
+			
+			$fileDetails = $this->CreateFolderTrail($fileName, $this->targetDirectory);
+			$fileDetails['mime'] = $this->getExtensionMimeType($fileName);
+			$fileDetails['fileData'] = $fileData;
+			
+			$this->file->setParents($fileDetails['targetDirectory']);
+			$this->file->setName($fileDetails['fileName']);
+			$this->file->setMimeType($fileDetails['mime']);
+			$result = $this->service->files->create($this->file, [
+				'data' => $fileDetails['fileData'],
+				'mimeType' => $fileDetails['mime'],
+				'uploadType' => 'multipart'
+			]);
+			
+			return $result;
+						
+		} catch (\Throwable $th) {
+			throw $th;
+		}
+	}
+	
 	private function CreateFolderTrail(String $fileName, Array $targetDirectory)
 	{
 		$folderTrail = explode('/', $fileName);
