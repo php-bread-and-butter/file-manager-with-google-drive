@@ -17,9 +17,9 @@ try {
     $drive->targetDirectory = [$folderId];
     if (file_exists($filePath)) 
     {
-        $fileSize = filesize($filePath);
+        $fileSize = number_format(filesize($filePath) / 1048576, 2);
 
-        echo "File found: $filePath($fileSize)\n";
+        echo "File found: $filePath($fileSize)MB\n";
 
         $response = $drive->writeFile(file_get_contents($filePath), $filePath);
         if(isset($response["id"])) 
