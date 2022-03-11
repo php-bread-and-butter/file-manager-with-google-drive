@@ -3,6 +3,7 @@ include "UploadException.php";
 include "GoogleDrive.php";
 
 try {
+    echo "\n=======================================\n";
     echo "Welcome to Google Drive Manager via CLI\n";
     echo "=======================================\n\n";
 
