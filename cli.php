@@ -19,10 +19,11 @@ try {
     if (file_exists($filePath)) 
     {
         $fileSize = number_format(filesize($filePath) / 1048576, 2);
+        $location = isset($argv[3]) ? $argv[3] : ltrim($filePath, "/");
 
         echo "File found: $filePath({$fileSize}MB)\n";
 
-        $response = $drive->writeFile(file_get_contents($filePath), $filePath);
+        $response = $drive->writeFile(file_get_contents($filePath), $location);
         if(isset($response["id"])) 
             throw new Exception("SUCCESS: File uploaded successfully: {$response["id"]}\n", 200);
         else
