@@ -23,7 +23,7 @@ try {
 
         echo "File found: $filePath({$fileSize}MB)\n";
 
-        $response = $drive->writeFile(file_get_contents($filePath), $location);
+        $response = $drive->uploadFile($filePath, $location);
         if(isset($response["id"])) 
             throw new Exception("SUCCESS: File uploaded successfully: {$response["id"]}\n", 200);
         else

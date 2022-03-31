@@ -168,47 +168,70 @@ class GoogleDrive {
 	
 	private function UploadLargeFile(Array $fileDetails)
 	{
-		$chunkSizeBytes = 1 * 1024 * 1024;
-		
-		// Call the API with the media upload, defer so it doesn't immediately return.
-		$this->client->setDefer(true);
-		
-		$this->file->setParents($fileDetails['targetDirectory']);
-		$this->file->setName($fileDetails['fileName']);
-		$this->file->setMimeType($fileDetails['mime']);
-		
-		$request = $this->service->files->create($this->file);
-		
-		// Create a media file upload to represent our upload process.
-		$media = new MediaFileUpload(
-			$this->client,
-			$request,
-			$fileDetails['mime'],
-			null,
-			true,
-			$chunkSizeBytes
-		);
-		$media->setFileSize(filesize($fileDetails['fileData']));
-		
-		// Upload the various chunks. $status will be false until the process is
-		// complete.
 		$status = false;
-		$handle = fopen($fileDetails['fileData'], "rb");
-		while (!$status && !feof($handle)) {
-			$chunk = fread($handle, $chunkSizeBytes);
-			$status = $media->nextChunk($chunk);
+		$response = "";
+		$request = NULL;
+		$chunkSizeBytes = 1 * 1024 * 1024;
+
+		try {
+			
+			// Call the API with the media upload, defer so it doesn't immediately return.
+			if($this->client){
+				$this->client->setDefer(TRUE);
+			}
+			
+			$this->file->setParents($fileDetails['targetDirectory']);
+			$this->file->setName($fileDetails['fileName']);
+			$this->file->setMimeType($fileDetails['mime']);
+			
+			$request = $this->service->files->create($this->file);
+
+			if($request) {
+				// Create a media file upload to represent our upload process.
+				$media = new MediaFileUpload(
+					$this->client,
+					$request,
+					$fileDetails['mime'],
+					null,
+					true,
+					$chunkSizeBytes
+				);
+				$media->setFileSize(filesize($fileDetails['fileData']));
+				
+				// Upload the various chunks. $status will be false until the process is complete.
+				$handle = fopen($fileDetails['fileData'], "rb");
+				while (!$status && !feof($handle)) {
+					$chunk = fread($handle, $chunkSizeBytes);
+					$status = $media->nextChunk($chunk);
+				}
+				
+				// The final value of $status will be the data from the API for the object that has been uploaded.
+				$result = false;
+				if($status != false) {
+					$result = $status;
+				}
+				
+				fclose($handle);
+
+			} else {
+				throw new Exception("ERROR: NO REQUEST, ABORTING.", 403);
+			}
+		} catch(\Google_Service_Exception $e) {
+			$response = $e->getMessage();
+			throw new Exception("SERVICE EXCEPTION: $response", $e->getCode());
+		} catch(\Google_Exception $e) {
+			$response = $e->getMessage();
+			throw new Exception("GOOGLE EXCEPTION: $response", $e->getCode());
+		} finally {
+			$response = "RELEASED CLIENT";
+			// Reset to the client to execute requests immediately in the future.
+			if($this->client){
+				$this->client->setDefer(FALSE);
+			}
+			throw new Exception("SUCCESS: $response", 200);
 		}
-		
-		// The final value of $status will be the data from the API for the object
-		// that has been uploaded.
-		$result = false;
-		if($status != false) {
-			$result = $status;
-		}
-		
-		fclose($handle);
-		// Reset to the client to execute requests immediately in the future.
-		$this->client->setDefer(false);
+
+		return([$status,$response,$result]);
 	}
 	
 	private function isLargeFile(String $fileData)
