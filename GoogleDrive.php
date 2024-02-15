@@ -12,7 +12,7 @@ class GoogleDrive {
 	private $service = false;
 	private $file = false;
 	public $targetDirectory = [
-		'1s0qF7XVxi0puPMcrefbFI6gnDj6R51wW'
+		'1j-TDTsiJQHSU3QBO1YWW-8hC67rlAGp9'
 	];
 	
 	public function __construct() {
@@ -21,6 +21,15 @@ class GoogleDrive {
 		$this->file = new DriveFile();
 	
 		$this->setConfig();
+	}
+
+	public function getAbout()
+	{
+		try {
+			return $this->service->about->get(['fields' => '*']);
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
 	}
 	
 	private function setConfig() {
@@ -33,12 +42,27 @@ class GoogleDrive {
 		}		
 	}
 
+	public function listDrives(Array $query = [])
+	{
+		try {
+			$drives = $this->service->drives->listDrives($query);
+
+			return $drives;
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
+	}
+
 	public function listFiles(Array $query)
 	{
-		$query['fields'] = '*';
-		$files = $this->service->files->listFiles($query);
+		try {
+			$query['fields'] = '*';
+			$files = $this->service->files->listFiles($query);
 
-		return $files;
+			return $files;
+		} catch (\Exception $e) {
+			die($e->getMessage());
+		}
 	}
 
 	public function getItem(String $itemId)
@@ -51,7 +75,7 @@ class GoogleDrive {
 	public function listParents(String $itemId, Array $parents = [])
 	{
 		$folder = $this->getItem($itemId);
-		if(count($folder->getParents()) > 0)
+		if(is_array($folder->getParents()) && count($folder->getParents()) > 0)
 		{
 			$pId = $folder->getParents()[0];
 			array_push($parents, [
@@ -475,4 +499,18 @@ class GoogleDrive {
 
 		return $file_ext;
 	}
+
+	function formatBytes($bytes, $precision = 2) { 
+		$units = array('B', 'KB', 'MB', 'GB', 'TB'); 
+	
+		$bytes = max($bytes, 0); 
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1024)); 
+		$pow = min($pow, count($units) - 1); 
+	
+		// Uncomment one of the following alternatives
+		// $bytes /= pow(1024, $pow);
+		$bytes /= (1 << (10 * $pow));
+	
+		return round($bytes, $precision) . ' ' . $units[$pow]; 
+	} 
 }

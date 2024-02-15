@@ -2,6 +2,9 @@
 include "UploadException.php";
 include "GoogleDrive.php";
 $drive = new GoogleDrive();
+
+// About Service Account User
+$about = $drive->getAbout();
 // Get Folder ID
 $folderId = (isset($_GET['folders']) && $_GET['folders'] != '') ? $_GET['folders'] : $drive->targetDirectory[0];
 $folderInfo = $drive->getItem($folderId);
@@ -34,6 +37,23 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
         die (new RuntimeException($e->getMessage()));
     }
 }
+// Delete multiple folders// Get the JSON string from the request body
+if(isset($_POST['folderIds']) && $_POST['folderIds'] != '')
+{
+    try {
+        $folderIds = $_POST['folderIds'];
+        foreach ($folderIds as $key => $folderId) {
+            $drive->deleteItem($folderId);
+        }
+    echo json_encode([
+        "flag" => "success",
+        "msg" => "Deleted items successfully"
+    ]);
+    exit;
+    } catch (\Exception $e) {
+        die (new RuntimeException($e->getMessage()));
+    }
+}
 ?><!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,6 +82,44 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
             if(confirm("Are you sure?"))
             {
                 window.location.href = `index.php?folders=${folderId}&deleteFolderId=${ID}`;                
+            }
+        }
+
+        // Function to serialize the array into a query string
+        function serializeArray(arr) {
+            return arr.map(function(id) {
+                return 'folderIds[]=' + encodeURIComponent(id);
+            }).join('&');
+        }
+
+        function removeFolders() {
+            if(confirm("Are you sure?")) {
+                const selections = document.querySelectorAll('[name="selection[]"]:checked');
+                const folderIds = [];
+                for (const item of selections) {
+                    folderIds.push(item.value);
+                }
+    
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/google-drive-file-manager/index.php', true);
+    
+                // Send the proper header information along with the request
+                xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    
+                xhr.onreadystatechange = () => {
+                    // Call a function when the state changes.
+                    if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                        // Request finished. Do processing here.
+                        console.log(xhr.responseText)
+                        window.location.reload()
+                    } else {
+                        console.error('Request failed with status:', xhr.status);
+                    }
+                };
+    
+                // Send the request with the data
+                xhr.send(serializeArray(folderIds));
+    
             }
         }
     </script>
@@ -116,7 +174,7 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="javascript:void(0)">Move</a>
                             <a class="dropdown-item" href="javascript:void(0)">Copy</a>
-                            <a class="dropdown-item" href="javascript:void(0)">Remove</a>
+                            <a class="dropdown-item" href="javascript:void(0)" onclick="removeFolders()">Remove</a>
                         </div>
                     </div>
                 </div>
@@ -124,6 +182,17 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
                     <div class="btn-group btn-group-toggle" data-toggle="buttons">
                         <label class="btn btn-default icon-btn md-btn-flat active"> <input type="radio" name="file-manager-view" value="file-manager-col-view" checked="" /> <span class="ion ion-md-apps"></span> </label>
                         <label class="btn btn-default icon-btn md-btn-flat"> <input type="radio" name="file-manager-view" value="file-manager-row-view" /> <span class="ion ion-md-menu"></span> </label>
+                        
+                        <div class="btn-group mr-2">
+                            <button type="button" class="btn btn-default btn-sm rounded-pill icon-btn borderless md-btn-flat hide-arrow dropdown-toggle" data-toggle="dropdown"><i class="ion ion-md-help"></i></button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                <li class="dropdown-item">Current User: <?= $about["user"]->displayName ?></li>
+                                <li class="dropdown-item">Max Upload Size: <?= $drive->formatBytes($about["maxUploadSize"]) ?></li>
+                                <li class="dropdown-item">Total quota : <?= $drive->formatBytes($about["storageQuota"]->limit) ?></li>
+                                <li class="dropdown-item">Used quota : <?= $drive->formatBytes($about["storageQuota"]->usageInDrive) ?></li>
+                                <li class="dropdown-item">Usage In Drive Trash : <?= $drive->formatBytes($about["storageQuota"]->usageInDrive) ?></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -136,7 +205,7 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
                 <div class="file-item-name pb-2">Filename</div>
                 <div class="file-item-changed pb-2">Changed</div>
             </div>
-            <?php if(count($folderInfo->getParents()) > 0) { ?>
+            <?php if(is_array($folderInfo->getParents()) && count($folderInfo->getParents()) > 0) { ?>
             <div class="file-item" ondblclick="action('<?= $folderInfo->getParents()[0] ?>', 'application/vnd.google-apps.folder');">
                 <div class="file-item-icon file-item-level-up fas fa-level-up-alt text-secondary"></div>
                 <a href="javascript:void(0)" class="file-item-name"> .. </a>
@@ -154,7 +223,7 @@ if(isset($_GET['deleteFolderId']) && $_GET['deleteFolderId'] != '')
             <div class="file-item" ondblclick="action('<?= $file->getId() ?>', '<?= $file->getMimeType() ?>');">
                 <div class="file-item-select-bg bg-primary"></div>
                 <label class="file-item-checkbox custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" />
+                    <input type="checkbox" name="selection[]" class="custom-control-input" value="<?= $file->getId() ?>" />
                     <span class="custom-control-label"></span>
                 </label>
                 <?php 

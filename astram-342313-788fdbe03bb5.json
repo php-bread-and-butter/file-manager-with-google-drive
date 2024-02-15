@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "astram-342313",
+  "private_key_id": "788fdbe03bb5ee8d5894423bc2441bf338f47470",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCrjETpAUlEk/Pj\njR2FpSmQP2YD+roMgLKorjAvSCNOgBpreF+q+7usqiUz/bB2yloFt6+elGc0KplK\nqLtU+qKOZcClWymXpnpTAA2Gt0pZ4q5QhHI//LnX5Q2ka9BX6V/IgP0KN89s6sUZ\nFVYGwt6tDmZ7cbRVQZNABCVXHKX4pEaEWhCbA3xu8G4dca0uRBwgaI/4ZxX04/l0\ni3VhiWTtH13dQDymSTeDK31vNKZfSCmS3AWoT3h3RFsZZOrLvs8Qj6pYma4T4Gt7\n9x9qgVHEhoOjlJX6f2xfHEA6kJMw+h2Z7F294xciWXoiPTOJy8h/IYeBovTzaNBB\nXSpsgiJRAgMBAAECggEAJzQSF3GczdhF9y2rnnwlKHrklGo7FFpg+d1804FX2Du8\nTe0fZ9LJi+cCQ4RpTGxn8ECPGN1vTGOjzoUK8puohIRKZz+THL4F3Gv5q1y92BbO\noUXzWh4mVmlZGcctwLlrk0WvDiO8+nYYfuf6Vec4vjG5R+KvRICM5ydLZUH9x/la\niMOULl12T6iho8b+SIuv5H6rn0v5CxAyWns4AwpWsJeT5CloOxFNUmwuUmdGy+3j\nqZT2dYy6JpPqk3Lps2yTW6UBlHca8/gpgGBdUAKbLBqtiaqBDlzwu6Pyur1g5IAc\nETqCYpumAEVO4aOE4vJmrMqm4fLER6wE4hLz8wAWNQKBgQDnQBKMUywKJhHMH1z/\nwTHF+zgAk9Fkwm48coVqbbIs9vKFImg1gm9pzl6IW9mRMmdW+mipWcWppz263/zD\ny5anajHBtkDAZFUWof1U1ldXVzvGjzIYzZurFNs254bYALOJ79jfh23pXvSTbkCZ\n57g1cKPT6GveK97R3uZLrprZAwKBgQC96G/5+66MeAemjJ/he1Pc9CP+r2g8hUDy\nyZ/aZ4CP9PlfJxaDQqj/KSBKGkkHevseU3P+B+Po1v+mPBUCkecwRyueHkau5v3Y\nfdjxsq0YNSlYYS6rCa2r6f4Pai4PUmA9mJAs0H+G0Yqw4OZjM5DsRzMYws7jDIVR\nXnNHuiAVGwKBgAEttGp+qgTLON//cOvkwiouI5TtK+4Fh6ZLNx7ZvES6ZXYEPN+4\n8HRrltO/FBbHWPt6fzoNuRIqRghDx/f/e58SzXodQas5V62r2ayrAvrw+N8EL88s\njRSMIKng+DD1n/SeAk7xU8ASudBeiXm/UpMDJfKYhqQ1OQd8yVOtaiCdAoGAB0L+\nFScEk6Z7VGkILA0VNdu4DKMUb0wBIceH70gJ6HdLmdHa0IYaBDfEXlEG/dw8Afra\n8pnGoz6lY+vkOcbuejAegNtThJicmEynoQZeDBDsVc7RhATIuUwnRNugi0FxIKnW\nyX/ngHY+wWi4Jo7wObi3QXkhhBkUd/oOmm2JkIUCgYASu9bonCj4U/WhiuIXIASw\nQZkkK6MF6zhKkkuBXOPO4bEXEj/KJnzXEuvsaQhQ/pJxO1C59xAP1lPi+2oC5qo8\nnJT0JdZ4kuEp8+No04VnAHaAJvibCg8bgc+xEIOaMuKkPUqBZib9e4guLhmwdixG\nE/aAxu7XHUNXzMzHgUb5YA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "astram-backup-5@astram-342313.iam.gserviceaccount.com",
+  "client_id": "110969554938025297936",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/astram-backup-5%40astram-342313.iam.gserviceaccount.com"
+}
